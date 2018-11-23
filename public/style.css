@@ -47,3 +47,10 @@ td {
     background: rgba(80, 201, 206, 0.7);
     color: rgb(36, 32, 56);
 }
+
+#map, #earth {
+    height: 500px;
+    width: 500px;
+    display: inline-block;
+    margin: 50px;
+}

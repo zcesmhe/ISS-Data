@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import Astronauts from "./Components/Astronauts";
+import ISSMap from "./Components/ISSMap";
+import Globe from "./Components/Globe";
 
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state={
-      latitude : "",
-      longitude : "",
-      unixTS : "",
-      naturalTS : "",
-      velocityKM : "",
-      velocityMiles : ""
+    this.state = {
+      latitude: "",
+      longitude: "",
+      unixTS: "",
+      naturalTS: "",
+      velocityKM: "",
+      velocityMiles: ""
     };
 
     this.getTime = this.getTime.bind(this);
@@ -21,22 +23,22 @@ class App extends Component {
 
   componentDidMount() {
     this.interval = setInterval(() =>
-    fetch("http://api.open-notify.org/iss-now.json")
-      .then(res => res.json())
-      .then(json => {
-        var previousLat = this.state.latitude;
-        var previousLong = this.state.longitude;
-        var currentLat = json.iss_position.latitude;
-        var currentLong = json.iss_position.longitude
-        this.setState({
-          latitude : currentLat,
-          longitude : currentLong,
-          unixTS : json.timestamp,
-          naturalTS : this.getTime(),
-          velocityKM: this.getVelocityKmh(currentLat, previousLat, currentLong, previousLong),
-          velocityMiles: this.getVelocityKmh(currentLat, previousLat, currentLong, previousLong)/1.609344
-        });
-      }), 1000);
+      fetch("http://api.open-notify.org/iss-now.json")
+        .then(res => res.json())
+        .then(json => {
+          var previousLat = this.state.latitude;
+          var previousLong = this.state.longitude;
+          var currentLat = json.iss_position.latitude;
+          var currentLong = json.iss_position.longitude
+          this.setState({
+            latitude: currentLat,
+            longitude: currentLong,
+            unixTS: json.timestamp,
+            naturalTS: this.getTime(),
+            velocityKM: this.getVelocityKmh(currentLat, previousLat, currentLong, previousLong),
+            velocityMiles: this.getVelocityKmh(currentLat, previousLat, currentLong, previousLong) / 1.609344
+          });
+        }), 1000);
   }
 
   getTime() {
@@ -46,10 +48,10 @@ class App extends Component {
 
   getVelocityKmh(lat1, lat2, long1, long2) {
     var earthRadius = 6371;
-    var dLat = (lat2 - lat1)*2*Math.PI*earthRadius/360;
-    var dLong = (long2 - long1)*2*Math.PI*earthRadius/360
+    var dLat = (lat2 - lat1) * 2 * Math.PI * earthRadius / 360;
+    var dLong = (long2 - long1) * 2 * Math.PI * earthRadius / 360
     var distanceKM = Math.sqrt(Math.pow(dLat, 2) + Math.pow(dLong, 2));
-    return distanceKM*3600;
+    return distanceKM * 3600;
   }
 
   render() {
@@ -83,6 +85,8 @@ class App extends Component {
             <td>{this.state.velocityMiles}</td>
           </tr>
         </table>
+        <ISSMap lat={parseFloat(this.state.latitude)} lng={parseFloat(this.state.longitude)} />
+        <Globe lat={parseFloat(this.state.latitude)} lng={parseFloat(this.state.longitude)} />
         <h2>Data provided by <a href="http://open-notify.org/Open-Notify-API/ISS-Location-Now/" target="blank">Open-Notify</a> and is updated every second.</h2>
       </div>
     );
